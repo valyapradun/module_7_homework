@@ -42,8 +42,60 @@ for item in col1:
 
 
 class MyNumberCollection(object):
+
+    @staticmethod
+    def is_number(item):
+        if isinstance(item, int):
+            return item
+        else:
+            raise TypeError('MyNumberCollection supports only numbers!')
+
     def __init__(self, *args):
-        super().__init__()
+        if len(args) == 1:
+            self.elements = [self.is_number(item) for item in args[0]]
+        else:
+            self.elements = list(range(*args))
+            self.elements.append(args[1])
 
     def __iter__(self):
+        self.start_index = 0
         return self
+
+    def __next__(self):
+        if self.start_index > len(self.elements):
+            raise StopIteration
+        current = self.start_index
+        self.start_index += 1
+        return current
+
+    def __str__(self):
+        return str(self.elements)
+
+    def __add__(self, other):
+        return MyNumberCollection(self.elements + other.elements)
+
+    def __getitem__(self, item):
+        return self.elements[item] ** 2
+
+    def append(self, item):
+        if isinstance(item, int):
+            self.elements.append(item)
+        else:
+            raise TypeError("'string' - object is not a number!")
+
+
+if __name__ == '__main__':
+    col1 = MyNumberCollection(0, 5, 2)
+    print(col1)
+    col2 = MyNumberCollection((1, 2, 3, 4, 5,))
+    print(col2)
+    #col3 = MyNumberCollection((1, 2, 3, "4", 5))
+    col1.append(7)
+    print(col1)
+    #col2.append("string")
+    print(col1 + col2)
+    print(col1)
+    print(col2)
+    print(col2[4])
+    for item in col1:
+        print(item)
