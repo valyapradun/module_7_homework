@@ -10,11 +10,23 @@ class CustomException(Exception):
     pass
 
 
-class LessException(CustomException):
+class ValueTooSmallException(CustomException):
+    """Raised when the input value is too small (< 4)"""
     pass
 
 
-class EvenException(CustomException):
+class ValueTooLargeException(CustomException):
+    """Raised when the input value is too large (> 100)"""
+    pass
+
+
+class ValueIsOddException(CustomException):
+    """Raised when the input value is odd"""
+    pass
+
+
+class ValueIsNotIntException(CustomException):
+    """Raised when the input value is not int"""
     pass
 
 
@@ -22,20 +34,23 @@ def even_number(number: str) -> bool:
     try:
         int_number = int(number)
     except Exception as err:
-        raise CustomException(f'Number {number} should be integer') from err
+        raise ValueIsNotIntException(f'Number {number} should be integer') from err
 
-    if int_number < 3:
-        raise LessException(f'Number {number} must be greater than 3')
+    if int_number < 4:
+        raise ValueTooSmallException(f'Number {number} must be greater than 3')
+
+    if int_number > 100:
+        raise ValueTooLargeException(f'Number {number} must be less than 100')
 
     if int_number % 2 == 0:
         return True
     else:
-        return False
+        raise ValueIsOddException(f'Number {number} must be even')
 
 
 if __name__ == '__main__':
     print(even_number('7'))
-    print(even_number('224'))
+    print(even_number('24'))
     print(even_number('0'))
     print(even_number('qwerty'))
 
